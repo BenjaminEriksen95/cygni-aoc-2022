@@ -11,6 +11,7 @@ plugins {
     id 'application'
     id 'java' // for test task
     id 'groovy'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 repositories {
@@ -23,7 +24,6 @@ dependencies {
     implementation 'org.jgrapht:jgrapht-core:1.5.1'
     implementation 'org.codehaus.groovy:groovy-all:3.0.13'
 
-
     // Use JUnit5
     implementation 'org.spockframework:spock-core:2.3-groovy-3.0'
 }
@@ -31,6 +31,14 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClass = 'aoc.App'
+}
+
+shadowJar {
+    manifest {
+        attributes(
+                'Main-Class': 'aoc.App'
+        )
+    }
 }
 
 jar {
