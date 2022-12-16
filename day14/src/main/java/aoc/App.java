@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Game {
-    int width = 163+1;
+    int width = 700;
     int height = 163+1;
-    int offset = 451;
-    int source = 500 - offset;
+    int source = 500;
     ArrayList<int[]> map;
 
     public static Game from(List<String> input, boolean part2) {
@@ -22,7 +21,7 @@ class Game {
         }
         if (part2) for (int i = 0; i < game.width; i++) game.map.get(i)[game.height -1] = 9;
 
-        game.map.get(500- game.offset)[0] = 2;
+        game.map.get(500)[0] = 2;
         input.forEach(l -> game.addBlocks(l));
 
         return game;
@@ -33,7 +32,7 @@ class Game {
         for (int i = 1; i < points.length; i++) {
             var c1 = points[i-1].trim().split(",");
             var c2 = points[i].trim().split(",");
-            addBlocks(Integer.parseInt(c1[0])-offset,Integer.parseInt(c1[1]), Integer.parseInt(c2[0])-offset,Integer.parseInt(c2[1]));
+            addBlocks(Integer.parseInt(c1[0]),Integer.parseInt(c1[1]), Integer.parseInt(c2[0]),Integer.parseInt(c2[1]));
         }
     }
 
@@ -49,8 +48,8 @@ class Game {
         }
     }
     public boolean nextState() {
-        if (map.get(source)[1] == 3) throw new IllegalStateException("No space for sand");
-        placeSand(source, 1);
+        if (map.get(source)[0] == 3) throw new IllegalStateException("No space for sand");
+        placeSand(source, 0);
         return true;
     }
 
@@ -68,22 +67,17 @@ class Game {
             return;
         }
 
-        // If can fall
         if (this.map.get(x)[d+1] == 0) {
             placeSand(x, d+1);
         }
-        else if (x > 0 && !flowRightBlocked(x, d)) {
+        else if (!flowRightBlocked(x, d)) {
             placeSand(x-1,d+1);
-        }
-        else if (x == 163) {
-            if (this.map.get(x)[d+1] == 0) placeSand(x,d+1);
-            else this.map.get(x)[d] = 3;
         }
         else if (!flowLeftBlocked(x, d)) {
             placeSand(x+1, d+1);
         }
         // else stay!
-        else if (this.map.get(x)[d] == 0) {
+        else if (this.map.get(x)[d] == 0 || this.map.get(x)[d] == 2) {
             map.get(x)[d] = 3;
         }
 
@@ -110,6 +104,7 @@ class Game {
                 i++;
 
             } catch (Exception e ) {
+                //System.out.println(this);
                 return i;
             }
         }
@@ -135,7 +130,7 @@ public class App {
         String part = System.getenv("part") == null ? "part1" : System.getenv("part");
         var input = parseInput("input.txt");
 
-        if (part.equals("part2")) {
+        if (part.equals("part1")) {
             System.out.println(getSolutionPart2(input));
         }
         else
