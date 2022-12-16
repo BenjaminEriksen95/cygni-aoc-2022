@@ -104,7 +104,6 @@ class Game {
                 i++;
 
             } catch (Exception e ) {
-                //System.out.println(this);
                 return i;
             }
         }
@@ -124,13 +123,12 @@ public class App {
         return game.solve();
     }
 
-
     public static void main(String[] args) throws IOException {
         System.out.println("java");
         String part = System.getenv("part") == null ? "part1" : System.getenv("part");
         var input = parseInput("input.txt");
 
-        if (part.equals("part1")) {
+        if (part.equals("part2")) {
             System.out.println(getSolutionPart2(input));
         }
         else
