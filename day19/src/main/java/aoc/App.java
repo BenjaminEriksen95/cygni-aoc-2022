@@ -5,12 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 
 class State {
@@ -20,32 +17,25 @@ class State {
     int[] prices;
     int[] resources = {0, 0, 0, 0};
     int[] machines = {1, 0, 0, 0};
-    int action;
-
-    public State() {
-
-    }
-
+    public State() {}
     public State(int p1, int p2, int p3, int p4, int p5, int p6) {
         prices = new int[]{p1, p2, p3, p4, p5, p6};
     }
-
     public List<State> expand() {
         List<State> possibleStates = new ArrayList<>();
         for (int machine : possiblePurchases()) {
             possibleStates.add(this.next(machine));
         }
         if (possibleStates.size() <= 1) possibleStates.add(this.next(-1));
-        return possibleStates; //.stream().filter(s -> !(s.resources[0] > 20 && s.resources[1] > 20)).collect(
-        //Collectors.toList());
+        return possibleStates;
     }
 
     private List<Integer> possiblePurchases() {
-        List<Integer> options = new ArrayList<Integer>();
-        if (resources[0] >= prices[0] && resources[0] < 10 && minute < 10) {
+        List<Integer> options = new ArrayList<>();
+        if (resources[0] >= prices[0] && resources[0] < 10 && minute < 12) {
             if (machines[2] <= 4) options.add(0);
         }
-        if (resources[0] >= prices[1] && minute < 15) {
+        if (resources[0] >= prices[1] && minute < 16) {
             if (machines[3] <= 3) options.add(1);
         }
         if (resources[0] >= prices[2] && resources[1] >= prices[3]) {
@@ -53,17 +43,7 @@ class State {
         }
         if (resources[0] >= prices[4] && resources[2] >= prices[5]) {
             options.add(3);
-        }
-        return options;
-    }
-/*
-    public int compare(State other) {
-        return this.h() - other.h(); // TODO correct order?
-    }*/
-
-    public int h() {
-        return this.resources[3] * 10 + this.resources[2] * 5 + this.resources[1] * 2
-            + this.resources[0];
+        } return options;
     }
 
     public State next(int machine) {
@@ -71,16 +51,12 @@ class State {
         next.prev = this;
         next.prices = this.prices;
         next.minute = this.minute + 1;
-        next.action = machine;
 
         for (int i = 0; i < next.resources.length; i++) {
             next.machines[i] = this.machines[i];
             next.resources[i] = this.resources[i] + this.machines[i];
         }
-        if (machine != -1) {
-            //System.out.println("building " + machine);
-            next.build(machine);
-        }
+        if (machine != -1) next.build(machine);
         return next;
     }
 
@@ -101,10 +77,7 @@ class State {
     }
 }
 
-
-
 public class App {
-
     public static Integer getSolutionPart1(List<String> lines) {
         List<State> initialStates = new ArrayList<>();
 
@@ -115,7 +88,6 @@ public class App {
         });
 
         ArrayList<State> bestStates = new ArrayList<>();
-        int b = 0;
         for (State s0: initialStates) {
             List<State> frontier = new ArrayList<>();
             frontier.add(s0);
@@ -131,15 +103,13 @@ public class App {
         }
         int result = 0;
         for (int i = 0; i < bestStates.size(); i++) {
-            System.out.println(i+1+ ": " +(i+1) * bestStates.get(i).resources[3]);
             result += (i+1) * bestStates.get(i).resources[3];
         }
-
         return result;
     }
 
-    public static Long getSolutionPart2(List<String> lines) {
-        return -1L;
+    public static Integer getSolutionPart2(List<String> lines) {
+        return 0;
     }
 
     public static void main(String[] args) throws IOException {
